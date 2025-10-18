@@ -76,6 +76,63 @@ const Header: React.FC<HeaderProps> = ({
   }, []);
 
 
+  const offers = [
+    {
+      message: "Get FREE Lip Tint worth ₹299 on orders above ₹999!",
+      code: "LIPLOVE",
+      bgColor: "#FFD1DC",
+    },
+    {
+      message: "Enjoy 10% OFF on all skincare combos worth ₹799+",
+      code: "SKIN10",
+      bgColor: "#D1E8E4",
+    },
+    {
+      message: "Flat ₹150 OFF on your first makeup order!",
+      code: "GLAM150",
+      bgColor: "#FCE1FF",
+    },
+    {
+      message: "Buy 2 Get 1 FREE on Fragrance Collection",
+      code: "AROMA3",
+      bgColor: "#FFF4C1",
+    },
+    {
+      message: "Grab Hair Care Essentials worth ₹499+ & save ₹100!",
+      code: "HAIR100",
+      bgColor: "#FFE5B4",
+    },
+    {
+      message: "Get ₹200 OFF on Bath & Body range above ₹999",
+      code: "BODY200",
+      bgColor: "#E6E6FA",
+    },
+    {
+      message: "Weekend Sale! ₹300 OFF on orders above ₹1200",
+      code: "WEEKEND300",
+      bgColor: "#C7F9CC",
+    },
+  ];
+
+  const todayIndex = new Date().getDay();
+  const todayOffer = offers[todayIndex % offers.length];
+
+  // Scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        setShowTopBanner(false);
+      } else {
+        setShowTopBanner(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   // Fetch suggestions with debounce
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -142,34 +199,36 @@ const Header: React.FC<HeaderProps> = ({
     "Gift Cards",
     "Sale & Offers",
   ];
-  const appBarHeight = isMobile ? 65 : 95; // matches your AppBar height in sx
+  const appBarHeight = isMobile ? 65 : 95;
   const desktopNavTop = showTopBanner ? topBannerHeight + appBarHeight : appBarHeight;
   return (
     <Box sx={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1200 }}>
       {/* Top Banner */}
       <Box
         sx={{
-          backgroundColor: "rgb(197, 183, 220)",
+          backgroundColor: todayOffer.bgColor,
           color: "#000",
           height: topBannerHeight,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           px: { xs: 1, sm: 2, md: 2 },
-          transition: "transform 0.2s ease",
+          transition: "transform 0.4s ease, background-color 0.6s ease",
           transform: showTopBanner ? "translateY(0)" : `translateY(-${topBannerHeight}px)`,
         }}
       >
         <Typography sx={{ fontSize: { xs: 12, sm: 13, md: 14 }, textAlign: "center" }}>
           <Box component="span" sx={{ fontWeight: "bold" }}>
-            Pick up to 6 FREE* Trial Sizes
+            {todayOffer.message}
           </Box>{" "}
-          with $105 Spend. Online only. *Terms apply. Use code{" "}
+          Use code{" "}
           <Box component="span" sx={{ color: "red", fontWeight: "bold" }}>
-            BEAUTYSMGM
+            {todayOffer.code}
           </Box>
+          {" "}
         </Typography>
       </Box>
+
 
       {/* Main Header */}
       <AppBar
